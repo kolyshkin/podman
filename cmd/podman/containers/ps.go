@@ -47,6 +47,7 @@ var (
 		Example:           strings.ReplaceAll(psCommand.Example, "podman ps", "podman container ps"),
 	}
 )
+
 var (
 	listOpts = entities.ContainerListOptions{
 		Filters: make(map[string][]string),
@@ -107,6 +108,7 @@ func listFlagSet(cmd *cobra.Command) {
 
 	flags.SetNormalizeFunc(utils.AliasFlags)
 }
+
 func checkFlags(c *cobra.Command) error {
 	// latest, and last are mutually exclusive.
 	if listOpts.Last >= 0 && listOpts.Latest {
@@ -200,12 +202,6 @@ func ps(cmd *cobra.Command, _ []string) error {
 	listContainers, err := getResponses()
 	if err != nil {
 		return err
-	}
-	if len(listOpts.Sort) > 0 {
-		listContainers, err = entities.SortPsOutput(listOpts.Sort, listContainers)
-		if err != nil {
-			return err
-		}
 	}
 
 	switch {
