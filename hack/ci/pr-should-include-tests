@@ -46,9 +46,19 @@ if [[ -z "$filtered_changes" ]]; then
     exit 0
 fi
 
-# This PR touches non-test files but adds no tests. Fail loudly.
-# The '$OVERRIDE_LABEL' label can be used to override this check; that is
-# handled by the CI workflow, not here.
+# Check for the override label via a live API query.
+# Requires: gh CLI, a token in GH_TOKEN, and PR_NUMBER set by the workflow.
+if [[ -n "$PR_NUMBER" ]] && command -v gh &>/dev/null; then
+    if gh pr view "$PR_NUMBER" --repo "${GITHUB_REPOSITORY:-containers/podman}" \
+         --json labels --jq '.labels[].name' 2>/dev/null |
+            grep -q -x -F "$OVERRIDE_LABEL"; then
+        echo "$ME: PR #$PR_NUMBER has the '$OVERRIDE_LABEL' label; skipping check."
+        exit 0
+    fi
+fi
+
+# This PR touches non-test files but adds no tests, and
+# the '$OVERRIDE_LABEL' is not set. Fail loudly.
 cat <<EOF
 $ME: PR does not include changes in the 'tests' directory
 
