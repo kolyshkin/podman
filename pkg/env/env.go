@@ -76,9 +76,9 @@ func ParseFile(path string) (_ map[string]string, err error) {
 
 	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() {
-		// trim the line from all leading whitespace first
+		// Trim the line from all leading whitespace first.
 		line := strings.TrimLeft(scanner.Text(), whiteSpaces)
-		// line is not empty, and not starting with '#'
+		// Line is not empty, and not starting with '#'.
 		if len(line) > 0 && !strings.HasPrefix(line, "#") {
 			if err := parseEnv(env, line); err != nil {
 				return nil, err
@@ -111,7 +111,7 @@ func parseEnv(env map[string]string, line string) error {
 				}
 			}
 		} else if val, ok := os.LookupEnv(name); ok {
-			// if only a pass-through variable is given, clean it up.
+			// If only a pass-through variable is given, clean it up.
 			env[name] = val
 		}
 	}
