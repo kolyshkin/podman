@@ -152,32 +152,20 @@ Options specific to type=**devpts**:
 
 Examples:
 
-- `type=bind,source=/path/on/host,destination=/path/in/container`
-
-- `type=bind,src=/path/on/host,dst=/path/in/container,relabel=shared`
-
-- `type=bind,src=/path/on/host,dst=/path/in/container,relabel=shared,U=true`
-
-- `type=bind,src=/path/on/host,dst=/path/in/container,idmap`
-
-- `type=bind,src=/path/on/host,dst=/path/in/container,idmap=uids=0-1-10;gids=0-100-10`
-
-- `type=devpts,destination=/dev/pts`
-
-- `type=glob,src=/usr/lib/libfoo*,destination=/usr/lib,ro=true`
-
-- `type=image,source=fedora,destination=/fedora-image,rw=true`
-
-- `type=ramfs,tmpfs-size=512M,destination=/path/in/container`
-
-- `type=tmpfs,tmpfs-size=512M,destination=/path/in/container`
-
-- `type=tmpfs,destination=/path/in/container,noswap`
-
-- `type=artifact,src=quay.io/libpod/testartifact:20250206-single,dst=/data`
-
-- `type=artifact,src=quay.io/libpod/testartifact:20250206-multi,dst=/data,title=test1`
-
-- `type=volume,destination=/path/in/container`
-
-- `type=volume,src=test_vol,dst=/data,subpath=/code/docs`
+```
+type=bind,source=/path/on/host,destination=/path/in/container
+type=bind,src=/path/on/host,dst=/path/in/container,relabel=shared
+type=bind,src=/path/on/host,dst=/path/in/container,relabel=shared,U=true
+type=bind,src=/path/on/host,dst=/path/in/container,idmap
+type=bind,src=/path/on/host,dst=/path/in/container,idmap=uids=0-1-10;gids=0-100-10
+type=devpts,destination=/dev/pts
+type=glob,src=/usr/lib/libfoo*,destination=/usr/lib,ro=true
+type=image,source=fedora,destination=/fedora-image,rw=true
+type=ramfs,tmpfs-size=512M,destination=/path/in/container
+type=tmpfs,tmpfs-size=512M,destination=/path/in/container
+type=tmpfs,destination=/path/in/container,noswap
+type=artifact,src=quay.io/libpod/testartifact:20250206-single,dst=/data
+type=artifact,src=quay.io/libpod/testartifact:20250206-multi,dst=/data,title=test1
+type=volume,destination=/path/in/container
+type=volume,src=test_vol,dst=/data,subpath=/code/docs
+```
