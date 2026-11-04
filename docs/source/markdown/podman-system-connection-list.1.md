@@ -27,7 +27,7 @@ Valid placeholders for the Go template listed below:
 | .TLSCA          | Path to a PEM file containing the certificate authority bundle to verify the server's certificate against. |
 | .TLSCert        | Path to a PEM file containing the certificate authority bundle to verify the server's certificate against. |
 | .TLSKey         | Path to a PEM file containing the private key matching `.TLSCA` |
-| .URI            | URI to podman service. Valid schemes are ssh://[user@]*host*[:port]*Unix domain socket*[?secure=True], unix://*Unix domain socket*, and tcp://localhost[:*port*] |
+| .URI            | URI to podman service. Valid schemes are unix://*path*, tcp://localhost[:*port*], and ssh://*user*@*host*[:*port*]*path* (where *path* is the Unix domain socket path) |
 
 #### **--quiet**, **-q**
 
