@@ -584,11 +584,14 @@ $(MANPAGES): %: %.md .install.md2man docdir
 # This does a bunch of filtering needed for man pages:
 #  1. Convert all markdown site links to plain text:
 #           [foo](https://www.....)   ->   foo
-#  2. Strip man-page targets like '[podman(1)](podman.1.md)'
+#  2. Same for links to anchors within the page (including footnotes):
+#           [foo](#bar)   ->   foo
+#           [[1]](#Footnote1)   ->   [1]
+#  3. Strip man-page targets like '[podman(1)](podman.1.md)'
 #     to just '[podman(1)]', because man pages have no link mechanism;
-#  3. Then remove the brackets: '[podman(1)]' -> 'podman(1)';
-#  4. Remove HTML-ish stuff like '<sup>..</sup>' and '<a>..</a>'
-#  5. Replace "\" (backslash) at EOL with two spaces (no idea why)
+#  4. Then remove the brackets: '[podman(1)]' -> 'podman(1)';
+#  5. Remove HTML-ish stuff like '<sup>..</sup>' and '<a>..</a>'
+#  6. Replace "\" (backslash) at EOL with two spaces (no idea why)
 # Then two sanity checks:
 #  1. test for "included file options/blahblah"; this indicates a failure
 #     in the markdown-preprocess tool; and
@@ -602,6 +605,7 @@ $(MANPAGES): %: %.md .install.md2man docdir
 #
 	@$(SED) -E \
 	        -e 's/\[([^]]*)\]\(http[^)]+\)/\1/g'         \
+	        -e 's/\[(\[?[^]]*\]?)\]\(#[^)]*\)/\1/g'      \
 	        -e 's/\((podman[^)]*\.md(#.*)?)\)//g'        \
 	        -e 's/\[(podman[^]]*)\]/\1/g'                \
 	        -e 's;<(/)?(a|a[[:space:]]+[^>]*|sup)>;;g'   \
