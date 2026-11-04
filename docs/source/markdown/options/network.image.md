@@ -57,15 +57,16 @@ considered insecure.
       pasta:--mtu,1500
       ```
 
-    - Disable IPv6, assign `10.0.2.0/24` to the `tap0` interface in the
-      container, with gateway `10.0.2.3`, enable DNS forwarder reachable at
-      `10.0.2.3`, set MTU to 1500 bytes, disable NDP, DHCPv6 and DHCP support:
+    - Disable IPv6, assign `10.0.2.0/24` to the interface in the container,
+      with gateway `10.0.2.2`, enable DNS forwarder reachable at `10.0.2.3`,
+      set MTU to 1500 bytes, disable NDP, DHCPv6 and DHCP support:
 
       ```
       pasta:--ipv4-only,-a,10.0.2.0,-n,24,-g,10.0.2.2,--dns-forward,10.0.2.3,-m,1500,--no-ndp,--no-dhcpv6,--no-dhcp
       ```
 
-    - Same as above, but leave the MTU to 65520 bytes:
+    - Same as above, but name the interface `tap0`, and leave the MTU at 65520
+      bytes:
 
       ```
       pasta:-I,tap0,--ipv4-only,-a,10.0.2.0,-n,24,-g,10.0.2.2,--dns-forward,10.0.2.3,--no-ndp,--no-dhcpv6,--no-dhcp
