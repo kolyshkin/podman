@@ -4,6 +4,9 @@
 Tests for markdown-preprocess
 """
 
+import io
+import os
+import tempfile
 import unittest
 
 # https://stackoverflow.com/questions/66665217/how-to-import-a-python-script-without-a-py-extension
@@ -138,6 +141,58 @@ class TestRender(unittest.TestCase):
         """unclosed if blocks still raise"""
         with self.assertRaisesRegex(ValueError, "unclosed"):
             pp.render('<<if is_quadlet>>q', {'is_quadlet': True})
+
+class TestInsertFile(unittest.TestCase):
+    def setUp(self):
+        self.olddir = os.getcwd()
+        self.tmpdir = tempfile.TemporaryDirectory()
+        os.chdir(self.tmpdir.name)
+        os.mkdir('options')
+
+    def tearDown(self):
+        os.chdir(self.olddir)
+        self.tmpdir.cleanup()
+
+    def write(self, path: str, text: str):
+        with open(path, 'w', encoding='utf-8') as fh:
+            fh.write(text)
+
+    def test_nested_include(self):
+        """@@include inside an included file is expanded"""
+        self.write('options/foo.md',
+                   '####> header comment\n'
+                   '#### **--foo**\n'
+                   '\n'
+                   '@@include options/_common.md\n'
+                   '\n'
+                   'Bar.\n')
+        self.write('options/_common.md',
+                   '####> header comment\n'
+                   'Common <<container|pod>> text for <<subcommand>>.\n')
+
+        p = mp.Preprocessor()
+        p.infile = 'podman-pod-create.1.md.in'
+        p.pod_or_container = 'pod'
+        out = io.StringIO()
+        p.insert_file(out, 'options/foo.md')
+        self.assertEqual(out.getvalue(),
+                         '\n[//]: # (BEGIN included file options/foo.md)\n'
+                         '#### **--foo**\n'
+                         '\n'
+                         '\n[//]: # (BEGIN included file options/_common.md)\n'
+                         'Common pod text for create.\n'
+                         '\n[//]: # (END   included file options/_common.md)\n'
+                         '\n'
+                         'Bar.\n'
+                         '\n[//]: # (END   included file options/foo.md)\n')
+
+    def test_nested_include_missing(self):
+        """nested @@include of a nonexistent file raises"""
+        self.write('options/foo.md', '@@include options/nonexistent.md\n')
+        p = mp.Preprocessor()
+        p.infile = 'podman-run.1.md.in'
+        with self.assertRaises(FileNotFoundError):
+            p.insert_file(io.StringIO(), 'options/foo.md')
 
 if __name__ == '__main__':
     unittest.main()

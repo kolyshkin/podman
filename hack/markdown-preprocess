@@ -207,6 +207,12 @@ class Preprocessor():
             for opt_line in rendered.splitlines():
                 if opt_line.startswith('####>'):
                     continue
+                # '@@include path' inside an included file (e.g. a text
+                # snippet shared by several option files)
+                if opt_line.startswith('@@include '):
+                    _, inc_path = opt_line.strip().split(" ")
+                    self.insert_file(fh_out, inc_path, is_quadlet)
+                    continue
 
                 opt_line = self.replace_type(opt_line)
                 opt_line = opt_line.replace('<<subcommand>>', self.podman_subcommand())
